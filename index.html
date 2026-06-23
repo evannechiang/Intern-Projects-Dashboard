@@ -6,24 +6,24 @@
 <title>Intern Projects Dashboard</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #22263a;
-    --border: #2e3250;
+    --bg: #f0f2f8;
+    --surface: #ffffff;
+    --surface2: #f1f5f9;
+    --border: #dde1ee;
     --accent: #6c63ff;
-    --accent2: #a78bfa;
-    --accent3: #38bdf8;
-    --green: #34d399;
-    --orange: #fb923c;
-    --pink: #f472b6;
-    --yellow: #fbbf24;
-    --text: #e2e8f0;
-    --text2: #94a3b8;
-    --text3: #64748b;
+    --accent2: #7c3aed;
+    --accent3: #0284c7;
+    --green: #059669;
+    --orange: #ea580c;
+    --pink: #db2777;
+    --yellow: #d97706;
+    --text: #0f172a;
+    --text2: #334155;
+    --text3: #94a3b8;
     --radius: 14px;
     --radius-sm: 8px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.4);
-    --glow: 0 0 20px rgba(108,99,255,0.15);
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --glow: 0 0 20px rgba(108,99,255,0.12);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -164,7 +164,7 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(15,17,23,0.92);
+    background: rgba(240,242,248,0.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 14px 32px;
@@ -231,11 +231,11 @@
   .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
 
   .btn-ai {
-    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
     color: var(--accent2);
-    border: 1px solid rgba(108,99,255,0.4);
+    border: 1px solid rgba(108,99,255,0.35);
   }
-  .btn-ai:hover { background: linear-gradient(135deg, #312e81, #3730a3); }
+  .btn-ai:hover { background: linear-gradient(135deg, #ddd6fe, #c4b5fd); }
 
   /* ── Page content ── */
   .page { display: none; padding: 32px; }
@@ -379,9 +379,9 @@
     border-radius: 20px;
   }
 
-  .status-done { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
-  .status-progress { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
-  .status-planned { background: rgba(148,163,184,0.1); color: var(--text3); border: 1px solid var(--border); }
+  .status-done { background: #dcfce7; color: var(--green); border: 1px solid #bbf7d0; }
+  .status-progress { background: #fef9c3; color: var(--yellow); border: 1px solid #fde68a; }
+  .status-planned { background: #f1f5f9; color: var(--text3); border: 1px solid var(--border); }
 
   .task-preview {
     font-size: 12px;
@@ -563,8 +563,8 @@
 
   /* ── AI panel ── */
   .ai-panel {
-    background: linear-gradient(135deg, rgba(30,27,75,0.6), rgba(49,46,129,0.4));
-    border: 1px solid rgba(108,99,255,0.3);
+    background: linear-gradient(135deg, #ede9fe, #f5f3ff);
+    border: 1px solid rgba(108,99,255,0.25);
     border-radius: var(--radius);
     padding: 20px;
     margin-top: 16px;
@@ -633,7 +633,7 @@
   }
 
   .slide-header {
-    background: linear-gradient(135deg, var(--surface2), rgba(108,99,255,0.1));
+    background: linear-gradient(135deg, var(--surface2), rgba(108,99,255,0.05));
     padding: 16px 22px;
     display: flex;
     align-items: center;
@@ -695,7 +695,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(15,23,42,0.45);
     backdrop-filter: blur(4px);
     z-index: 200;
     align-items: center;
@@ -769,8 +769,8 @@
   /* ── Edit mode toggle ── */
   .edit-mode-banner {
     display: none;
-    background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(251,191,36,0.05));
-    border: 1px solid rgba(251,191,36,0.3);
+    background: #fefce8;
+    border: 1px solid #fde68a;
     border-radius: var(--radius-sm);
     padding: 10px 16px;
     font-size: 12px;
@@ -1093,9 +1093,9 @@ function taskCardHTML(task, i, page) {
           <div class="task-preview">${escHtml(preview.slice(0,100))}${preview.length>100?'…':''}</div>
         </div>
       </div>
-      <div class="task-card-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn" title="Change status" onclick="cycleStatus('${page}','${task.id}')">🔄</button>
-        <button class="icon-btn danger" title="Delete" onclick="deleteTask('${page}','${task.id}')">🗑</button>
+      <div class="task-card-actions">
+        <button class="icon-btn" title="Change status" onclick="event.stopPropagation();cycleStatus('${page}','${task.id}')">🔄</button>
+        <button class="icon-btn danger" title="Delete" onclick="event.stopPropagation();deleteTask('${page}','${task.id}')">🗑</button>
       </div>
       <div class="chevron">▼</div>
     </div>
@@ -1209,7 +1209,7 @@ function slideCardHTML(s, i) {
       <span class="slide-number-badge">Slide ${i+1}</span>
       <div class="slide-title-text">${escHtml(s.slideTitle || 'Untitled Slide')}</div>
       <div class="task-card-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn danger" onclick="deleteSlide('${s.id}')">🗑</button>
+        <button class="icon-btn danger" onclick="event.stopPropagation();deleteSlide('${s.id}')">🗑</button>
       </div>
       <div class="chevron">▼</div>
     </div>
