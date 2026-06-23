@@ -4,6 +4,27 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Intern Projects Dashboard</title>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBJ_DtI7_5soFKxYVfAQ48ekrlqm2oK33g",
+    authDomain: "intern-project-dashboard.firebaseapp.com",
+    databaseURL: "https://intern-project-dashboard-default-rtdb.firebaseio.com",
+    projectId: "intern-project-dashboard",
+    storageBucket: "intern-project-dashboard.firebasestorage.app",
+    messagingSenderId: "448507910696",
+    appId: "1:448507910696:web:7b59cadfc6bc82e8c0b31d",
+    measurementId: "G-T28WYJJ9V7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window._fbSet = (path, data) => set(ref(db, path), data);
+  window._fbListen = (path, cb) => onValue(ref(db, path), snap => cb(snap.val()));
+</script>
 <style>
   :root {
     --bg: #f0f2f8;
@@ -981,17 +1002,23 @@ const PAGE_META = {
 let currentPage = 'coa';
 let editMode = false;
 
-function load(key, def) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; }
+let tasks = { coa: [], pricebook: [], scorecard: [] };
+let slides = [];
+
+// ── Firebase sync ──
+function save(key, val) {
+  if (window._fbSet) window._fbSet(key, val);
 }
-function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
-// tasks: { coa: [...], pricebook: [...], scorecard: [...] }
-// each task: { id, name, status, question, approach, accomplished, impact, problems, usecase, tools, date }
-let tasks = load('ipd_tasks', { coa: [], pricebook: [], scorecard: [] });
-
-// slides: [{ id, slideTitle, purpose, ideas, subtitles, deliverables, notes }]
-let slides = load('ipd_slides', []);
+function initFirebase() {
+  if (!window._fbListen) { setTimeout(initFirebase, 200); return; }
+  window._fbListen('ipd_tasks', val => {
+    if (val) { tasks = val; renderTaskPage(currentPage !== 'llm' ? currentPage : 'coa'); }
+  });
+  window._fbListen('ipd_slides', val => {
+    if (val) { slides = Array.isArray(val) ? val : Object.values(val); if (currentPage === 'llm') renderLLM(); }
+  });
+}
 
 // ══════════════════════════════════════════════════════════
 //  NAVIGATION
@@ -1593,6 +1620,7 @@ document.getElementById('aiModal').addEventListener('click', e => {
 // ══════════════════════════════════════════════════════════
 updatePeriod();
 renderTaskPage('coa');
+initFirebase();
 </script>
 </body>
 </html>
