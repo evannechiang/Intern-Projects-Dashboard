@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Intern Projects Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2e3250;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --accent3: #38bdf8;
+    --green: #34d399;
+    --orange: #fb923c;
+    --pink: #f472b6;
+    --yellow: #fbbf24;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --glow: 0 0 20px rgba(108,99,255,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* ── Sidebar ── */
+  #sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transition: width 0.3s;
+  }
+
+  .sidebar-header {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .sidebar-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .sidebar-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  .sidebar-nav {
+    padding: 16px 12px;
+    flex: 1;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 0 8px;
+    margin-bottom: 8px;
+    margin-top: 16px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text2);
+    transition: all 0.18s;
+    margin-bottom: 2px;
+    user-select: none;
+  }
+
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+
+  .nav-item.active {
+    background: linear-gradient(135deg, rgba(108,99,255,0.2), rgba(167,139,250,0.1));
+    color: var(--accent2);
+    border: 1px solid rgba(108,99,255,0.25);
+  }
+
+  .nav-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-icon { background: rgba(108,99,255,0.2); }
+
+  .sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .period-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .period-badge span {
+    display: block;
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── Main ── */
+  #main {
+    margin-left: 240px;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(15,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(108,99,255,0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(108,99,255,0.3);
+  }
+
+  .topbar-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.18s;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .btn-ai {
+    background: linear-gradient(135deg, #1e1b4b, #312e81);
+    color: var(--accent2);
+    border: 1px solid rgba(108,99,255,0.4);
+  }
+  .btn-ai:hover { background: linear-gradient(135deg, #312e81, #3730a3); }
+
+  /* ── Page content ── */
+  .page { display: none; padding: 32px; }
+  .page.active { display: block; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--accent));
+  }
+
+  .stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text3);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Section header ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  /* ── Task card ── */
+  .tasks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .task-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .task-card:hover {
+    border-color: rgba(108,99,255,0.4);
+    box-shadow: var(--glow);
+  }
+
+  .task-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    cursor: pointer;
+    gap: 12px;
+  }
+
+  .task-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .task-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .task-header-info { min-width: 0; flex: 1; }
+
+  .task-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .task-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .task-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+
+  .status-done { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .status-progress { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+  .status-planned { background: rgba(148,163,184,0.1); color: var(--text3); border: 1px solid var(--border); }
+
+  .task-preview {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .task-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent); }
+  .icon-btn.danger:hover { border-color: #ef4444; color: #ef4444; }
+
+  .chevron {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text3);
+    transition: transform 0.2s;
+    font-size: 12px;
+  }
+
+  .task-card.expanded .chevron { transform: rotate(180deg); }
+
+  /* ── Task body ── */
+  .task-body {
+    display: none;
+    padding: 0 22px 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .task-card.expanded .task-body { display: block; }
+
+  .task-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 18px;
+  }
+
+  .task-field {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .task-field.full { grid-column: 1 / -1; }
+
+  .field-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .field-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+
+  .field-text {
+    font-size: 13.5px;
+    color: var(--text2);
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  [contenteditable="true"] {
+    outline: none;
+    border-radius: 6px;
+    padding: 4px 6px;
+    margin: -4px -6px;
+    transition: background 0.15s;
+  }
+
+  [contenteditable="true"]:focus {
+    background: rgba(108,99,255,0.08);
+    box-shadow: inset 0 0 0 1px rgba(108,99,255,0.4);
+  }
+
+  [contenteditable="true"]:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  /* ── Impact chip ── */
+  .impact-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .impact-chip {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    background: rgba(56,189,248,0.1);
+    color: var(--accent3);
+    border: 1px solid rgba(56,189,248,0.25);
+  }
+
+  /* ── Problems ── */
+  .problem-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    align-items: flex-start;
+  }
+  .problem-item:last-child { border-bottom: none; }
+
+  .problem-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  /* ── Timeline tag ── */
+  .task-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .meta-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--surface2);
+    color: var(--text3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ── AI panel ── */
+  .ai-panel {
+    background: linear-gradient(135deg, rgba(30,27,75,0.6), rgba(49,46,129,0.4));
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+  }
+
+  .ai-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .ai-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .ai-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  .ai-output {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+
+  .ai-input-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .ai-input {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .ai-input:focus { border-color: var(--accent); }
+  .ai-input::placeholder { color: var(--text3); }
+
+  /* ── LLM Presentation ── */
+  .presentation-layout { display: flex; flex-direction: column; gap: 20px; }
+
+  .slide-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .slide-header {
+    background: linear-gradient(135deg, var(--surface2), rgba(108,99,255,0.1));
+    padding: 16px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  .slide-number-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.25);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .slide-title-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+    margin: 0 14px;
+  }
+
+  .slide-body {
+    display: none;
+    padding: 22px;
+  }
+
+  .slide-card.expanded .slide-body { display: block; }
+
+  .slide-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 14px;
+    opacity: 0.4;
+  }
+
+  .empty-text { font-size: 14px; margin-bottom: 20px; }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 560px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+
+  .modal-header {
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-title { font-size: 17px; font-weight: 700; color: var(--text); }
+
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .form-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .form-input, .form-textarea, .form-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--accent);
+  }
+
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  .form-select option { background: var(--surface2); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  /* ── Edit mode toggle ── */
+  .edit-mode-banner {
+    display: none;
+    background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(251,191,36,0.05));
+    border: 1px solid rgba(251,191,36,0.3);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--yellow);
+    margin-bottom: 20px;
+    align-items: center;
+    gap: 8px;
+  }
+  .edit-mode-banner.visible { display: flex; }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+  /* ── Animations ── */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .page.active { animation: fadeIn 0.25s ease; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinning { animation: spin 1s linear infinite; display: inline-block; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    #sidebar { width: 64px; }
+    .sidebar-header, .nav-label, .nav-item span, .sidebar-footer { display: none; }
+    #main { margin-left: 64px; }
+    .task-fields { grid-template-columns: 1fr; }
+    .slide-fields { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Internship</div>
+    <div class="sidebar-title">Projects Dashboard</div>
+    <div class="sidebar-subtitle">Work Log & Contributions</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-label">Projects</div>
+    <div class="nav-item active" onclick="switchPage('coa')">
+      <div class="nav-icon">💳</div>
+      <span>Cost of Acceptance</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('pricebook')">
+      <div class="nav-icon">📗</div>
+      <span>Pricebook</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('scorecard')">
+      <div class="nav-icon">📊</div>
+      <span>Scorecard</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('llm')">
+      <div class="nav-icon">🤖</div>
+      <span>LLM Presentation</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="period-badge">
+      <span>Current Period</span>
+      <div id="currentPeriod">—</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div id="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="page-tag" id="topPageTag">CoA</span>
+      <span class="topbar-title" id="topTitle">Cost of Acceptance</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" id="editModeBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+      <button class="btn btn-ai" onclick="openAIPanel()">✨ AI Summarize</button>
+      <button class="btn btn-primary" id="addTaskBtn" onclick="openAddModal()">+ Add Task</button>
+    </div>
+  </div>
+
+  <!-- ══ CoA Page ══ -->
+  <div class="page active" id="page-coa">
+    <div class="edit-mode-banner" id="edit-banner-coa">
+      ✏️ Edit mode is ON — click any text field to edit directly. Changes auto-save.
+    </div>
+    <div class="stats-row" id="stats-coa"></div>
+    <div class="section-header">
+      <div class="section-title"><div class="dot"></div>Task Breakdown</div>
+    </div>
+    <div class="tasks-grid" id="tasks-coa"></div>
+  </div>
+
+  <!-- ══ Pricebook Page ══ -->
+  <div class="page" id="page-pricebook">
+    <div class="edit-mode-banner" id="edit-banner-pricebook">
+      ✏️ Edit mode is ON — click any text field to edit directly. Changes auto-save.
+    </div>
+    <div class="stats-row" id="stats-pricebook"></div>
+    <div class="section-header">
+      <div class="section-title"><div class="dot" style="background:var(--green)"></div>Task Breakdown</div>
+    </div>
+    <div class="tasks-grid" id="tasks-pricebook"></div>
+  </div>
+
+  <!-- ══ Scorecard Page ══ -->
+  <div class="page" id="page-scorecard">
+    <div class="edit-mode-banner" id="edit-banner-scorecard">
+      ✏️ Edit mode is ON — click any text field to edit directly. Changes auto-save.
+    </div>
+    <div class="stats-row" id="stats-scorecard"></div>
+    <div class="section-header">
+      <div class="section-title"><div class="dot" style="background:var(--orange)"></div>Task Breakdown</div>
+    </div>
+    <div class="tasks-grid" id="tasks-scorecard"></div>
+  </div>
+
+  <!-- ══ LLM Page ══ -->
+  <div class="page" id="page-llm">
+    <div class="edit-mode-banner" id="edit-banner-llm">
+      ✏️ Edit mode is ON — click any text field to edit directly. Changes auto-save.
+    </div>
+    <div class="section-header" style="margin-bottom:20px">
+      <div class="section-title"><div class="dot" style="background:var(--pink)"></div>Presentation Slides</div>
+    </div>
+    <div class="presentation-layout" id="slides-llm"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADD TASK MODAL ═══════════════ -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add New Task</div>
+      <button class="icon-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- injected dynamically -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTask()">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ AI PANEL MODAL ═══════════════ -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal" style="width:680px">
+    <div class="modal-header">
+      <div class="modal-title">✨ AI Assistant</div>
+      <button class="icon-btn" onclick="document.getElementById('aiModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text2);line-height:1.6">
+        Enter your Anthropic API key and ask the AI to summarize, rewrite, or generate bullet points for any content.
+      </p>
+      <div class="form-group">
+        <label class="form-label">Anthropic API Key</label>
+        <input class="form-input" id="aiApiKey" type="password" placeholder="sk-ant-..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">What would you like to do?</label>
+        <textarea class="form-textarea" id="aiPrompt" placeholder="e.g. Summarize my CoA tasks into an executive summary. Highlight problems solved and business impact..." style="min-height:80px"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Include data from</label>
+        <select class="form-select" id="aiSource">
+          <option value="current">Current page tasks</option>
+          <option value="all">All pages / full dashboard</option>
+        </select>
+      </div>
+      <div class="ai-panel" id="aiResult" style="display:none">
+        <div class="ai-panel-header">
+          <div class="ai-avatar">✨</div>
+          <div class="ai-label">Claude's Response</div>
+        </div>
+        <div class="ai-output" id="aiOutputText"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="document.getElementById('aiModal').classList.remove('open')">Close</button>
+      <button class="btn btn-ai" id="aiRunBtn" onclick="runAI()">✨ Generate</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  DATA STORE
+// ══════════════════════════════════════════════════════════
+const PAGES = ['coa','pricebook','scorecard'];
+const PAGE_META = {
+  coa:       { tag:'CoA',       title:'Cost of Acceptance',    color:'var(--accent)',  icon:'💳' },
+  pricebook: { tag:'Pricebook', title:'Pricebook',             color:'var(--green)',   icon:'📗' },
+  scorecard: { tag:'Scorecard', title:'Internal Scorecard',    color:'var(--orange)',  icon:'📊' },
+  llm:       { tag:'LLM',       title:'LLM Presentation',      color:'var(--pink)',    icon:'🤖' },
+};
+
+let currentPage = 'coa';
+let editMode = false;
+
+function load(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; }
+}
+function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+// tasks: { coa: [...], pricebook: [...], scorecard: [...] }
+// each task: { id, name, status, question, approach, accomplished, impact, problems, usecase, tools, date }
+let tasks = load('ipd_tasks', { coa: [], pricebook: [], scorecard: [] });
+
+// slides: [{ id, slideTitle, purpose, ideas, subtitles, deliverables, notes }]
+let slides = load('ipd_slides', []);
+
+// ══════════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════════
+function switchPage(p) {
+  currentPage = p;
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.querySelectorAll('.nav-item')[['coa','pricebook','scorecard','llm'].indexOf(p)].classList.add('active');
+
+  const meta = PAGE_META[p];
+  document.getElementById('topPageTag').textContent = meta.tag;
+  document.getElementById('topTitle').textContent = meta.title;
+  document.getElementById('topPageTag').style.background = `rgba(108,99,255,0.15)`;
+  document.getElementById('addTaskBtn').textContent = p === 'llm' ? '+ Add Slide' : '+ Add Task';
+
+  if (p !== 'llm') renderTaskPage(p);
+  else renderLLM();
+  updateEditBanners();
+}
+
+// ══════════════════════════════════════════════════════════
+//  PERIOD
+// ══════════════════════════════════════════════════════════
+function updatePeriod() {
+  const now = new Date();
+  const opts = { month: 'long', year: 'numeric' };
+  document.getElementById('currentPeriod').textContent = now.toLocaleDateString('en-US', opts);
+}
+
+// ══════════════════════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════════════════════
+function renderStats(page) {
+  const t = tasks[page];
+  const done = t.filter(x => x.status === 'done').length;
+  const inprog = t.filter(x => x.status === 'progress').length;
+  const meta = PAGE_META[page];
+
+  document.getElementById('stats-' + page).innerHTML = `
+    <div class="stat-card" style="--accent-color:${meta.color}">
+      <div class="stat-number">${t.length}</div>
+      <div class="stat-label">Total Tasks</div>
+    </div>
+    <div class="stat-card" style="--accent-color:var(--green)">
+      <div class="stat-number">${done}</div>
+      <div class="stat-label">Completed</div>
+    </div>
+    <div class="stat-card" style="--accent-color:var(--yellow)">
+      <div class="stat-number">${inprog}</div>
+      <div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-card" style="--accent-color:var(--accent3)">
+      <div class="stat-number">${done > 0 ? Math.round(done/t.length*100) : 0}%</div>
+      <div class="stat-label">Completion Rate</div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════
+//  TASK PAGE RENDER
+// ══════════════════════════════════════════════════════════
+function renderTaskPage(page) {
+  renderStats(page);
+  const container = document.getElementById('tasks-' + page);
+  const t = tasks[page];
+
+  if (t.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">${PAGE_META[page].icon}</div>
+        <div class="empty-text">No tasks yet for this project.<br>Click <strong>+ Add Task</strong> to get started.</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = t.map((task, i) => taskCardHTML(task, i, page)).join('');
+}
+
+function statusBadge(s) {
+  if (s === 'done') return '<span class="task-status status-done">✓ Done</span>';
+  if (s === 'progress') return '<span class="task-status status-progress">⏳ In Progress</span>';
+  return '<span class="task-status status-planned">○ Planned</span>';
+}
+
+function taskCardHTML(task, i, page) {
+  const ed = editMode ? 'contenteditable="true"' : '';
+  const preview = task.question || task.approach || 'No description yet';
+
+  return `
+  <div class="task-card" id="tc-${task.id}">
+    <div class="task-card-header" onclick="toggleCard('${task.id}')">
+      <div class="task-card-header-left">
+        <div class="task-number">${i+1}</div>
+        <div class="task-header-info">
+          <div class="task-title-row">
+            <span class="task-name">${escHtml(task.name)}</span>
+            ${statusBadge(task.status)}
+          </div>
+          <div class="task-preview">${escHtml(preview.slice(0,100))}${preview.length>100?'…':''}</div>
+        </div>
+      </div>
+      <div class="task-card-actions" onclick="event.stopPropagation()">
+        <button class="icon-btn" title="Change status" onclick="cycleStatus('${page}','${task.id}')">🔄</button>
+        <button class="icon-btn danger" title="Delete" onclick="deleteTask('${page}','${task.id}')">🗑</button>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+
+    <div class="task-body">
+      <div class="task-meta-row">
+        ${task.date ? `<span class="meta-tag">📅 ${escHtml(task.date)}</span>` : ''}
+        ${task.tools ? task.tools.split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="meta-tag">🛠 ${escHtml(t)}</span>`).join('') : ''}
+      </div>
+
+      <div class="task-fields">
+        <div class="task-field full">
+          <div class="field-label"><div class="field-icon" style="background:rgba(108,99,255,0.15)">❓</div>Task / Question</div>
+          <div class="field-text" ${ed} data-placeholder="What was the task or question you were asked to solve?"
+            data-field="question" data-page="${page}" data-id="${task.id}"
+            onblur="saveFieldEdit(this)">${escHtml(task.question||'')}</div>
+        </div>
+
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(56,189,248,0.15)">🔍</div>How I Did It</div>
+          <div class="field-text" ${ed} data-placeholder="Describe your approach, steps taken, methodology..."
+            data-field="approach" data-page="${page}" data-id="${task.id}"
+            onblur="saveFieldEdit(this)">${escHtml(task.approach||'')}</div>
+        </div>
+
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(52,211,153,0.15)">✅</div>What I Accomplished</div>
+          <div class="field-text" ${ed} data-placeholder="What did you actually produce or deliver?"
+            data-field="accomplished" data-page="${page}" data-id="${task.id}"
+            onblur="saveFieldEdit(this)">${escHtml(task.accomplished||'')}</div>
+        </div>
+
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(251,191,36,0.15)">⚡</div>Impact</div>
+          <div class="field-text" ${ed} data-placeholder="What was the business or team impact? Who benefited?"
+            data-field="impact" data-page="${page}" data-id="${task.id}"
+            onblur="saveFieldEdit(this)">${escHtml(task.impact||'')}</div>
+        </div>
+
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(244,114,182,0.15)">🔧</div>Problems Faced</div>
+          <div class="field-text" ${ed} data-placeholder="What blockers or challenges did you run into?"
+            data-field="problems" data-page="${page}" data-id="${task.id}"
+            onblur="saveFieldEdit(this)">${escHtml(task.problems||'')}</div>
+        </div>
+
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(251,146,60,0.15)">💡</div>Use Cases</div>
+          <div class="field-text" ${ed} data-placeholder="Real-world scenarios, examples, or applications..."
+            data-field="usecase" data-page="${page}" data-id="${task.id}"
+            onblur="saveFieldEdit(this)">${escHtml(task.usecase||'')}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleCard(id) {
+  document.getElementById('tc-' + id)?.classList.toggle('expanded');
+}
+
+function cycleStatus(page, id) {
+  const task = tasks[page].find(t => t.id === id);
+  if (!task) return;
+  const order = ['planned','progress','done'];
+  task.status = order[(order.indexOf(task.status)+1) % order.length];
+  save('ipd_tasks', tasks);
+  renderTaskPage(page);
+  // Re-expand
+  setTimeout(() => document.getElementById('tc-'+id)?.classList.add('expanded'), 10);
+}
+
+function deleteTask(page, id) {
+  if (!confirm('Delete this task?')) return;
+  tasks[page] = tasks[page].filter(t => t.id !== id);
+  save('ipd_tasks', tasks);
+  renderTaskPage(page);
+}
+
+function saveFieldEdit(el) {
+  const { field, page, id } = el.dataset;
+  const task = tasks[page]?.find(t => t.id === id);
+  if (task) {
+    task[field] = el.innerText.trim();
+    save('ipd_tasks', tasks);
+    renderStats(page);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  LLM PRESENTATION
+// ══════════════════════════════════════════════════════════
+function renderLLM() {
+  const container = document.getElementById('slides-llm');
+  if (slides.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🎯</div>
+        <div class="empty-text">No slides yet.<br>Click <strong>+ Add Slide</strong> to build your presentation.</div>
+      </div>`;
+    return;
+  }
+  container.innerHTML = slides.map((s,i) => slideCardHTML(s,i)).join('');
+}
+
+function slideCardHTML(s, i) {
+  const ed = editMode ? 'contenteditable="true"' : '';
+  return `
+  <div class="slide-card" id="sc-${s.id}">
+    <div class="slide-header" onclick="toggleSlide('${s.id}')">
+      <span class="slide-number-badge">Slide ${i+1}</span>
+      <div class="slide-title-text">${escHtml(s.slideTitle || 'Untitled Slide')}</div>
+      <div class="task-card-actions" onclick="event.stopPropagation()">
+        <button class="icon-btn danger" onclick="deleteSlide('${s.id}')">🗑</button>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="slide-body">
+      <div class="slide-fields">
+        <div class="task-field full">
+          <div class="field-label"><div class="field-icon" style="background:rgba(244,114,182,0.15)">🎯</div>Purpose / Goal</div>
+          <div class="field-text" ${ed} data-placeholder="What is the goal of this slide?"
+            data-field="purpose" data-sid="${s.id}" onblur="saveSlideField(this)">${escHtml(s.purpose||'')}</div>
+        </div>
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(108,99,255,0.15)">💡</div>Key Ideas</div>
+          <div class="field-text" ${ed} data-placeholder="Main ideas or talking points..."
+            data-field="ideas" data-sid="${s.id}" onblur="saveSlideField(this)">${escHtml(s.ideas||'')}</div>
+        </div>
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(56,189,248,0.15)">📝</div>Subtitles / Sections</div>
+          <div class="field-text" ${ed} data-placeholder="Sub-sections or breakdowns within this slide..."
+            data-field="subtitles" data-sid="${s.id}" onblur="saveSlideField(this)">${escHtml(s.subtitles||'')}</div>
+        </div>
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(52,211,153,0.15)">📦</div>Deliverables</div>
+          <div class="field-text" ${ed} data-placeholder="What outputs or results are shown here?"
+            data-field="deliverables" data-sid="${s.id}" onblur="saveSlideField(this)">${escHtml(s.deliverables||'')}</div>
+        </div>
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(251,191,36,0.15)">👥</div>Audience & Context</div>
+          <div class="field-text" ${ed} data-placeholder="Who is this for? What context should they know?"
+            data-field="audience" data-sid="${s.id}" onblur="saveSlideField(this)">${escHtml(s.audience||'')}</div>
+        </div>
+        <div class="task-field">
+          <div class="field-label"><div class="field-icon" style="background:rgba(251,146,60,0.15)">🗒</div>Speaker Notes</div>
+          <div class="field-text" ${ed} data-placeholder="Notes for when presenting this slide..."
+            data-field="notes" data-sid="${s.id}" onblur="saveSlideField(this)">${escHtml(s.notes||'')}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleSlide(id) {
+  document.getElementById('sc-' + id)?.classList.toggle('expanded');
+}
+
+function deleteSlide(id) {
+  if (!confirm('Delete this slide?')) return;
+  slides = slides.filter(s => s.id !== id);
+  save('ipd_slides', slides);
+  renderLLM();
+}
+
+function saveSlideField(el) {
+  const { field, sid } = el.dataset;
+  const slide = slides.find(s => s.id === sid);
+  if (slide) {
+    slide[field] = el.innerText.trim();
+    save('ipd_slides', slides);
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════════════════
+function openAddModal() {
+  if (currentPage === 'llm') {
+    openAddSlideModal();
+    return;
+  }
+  document.getElementById('modalTitle').textContent = `Add Task — ${PAGE_META[currentPage].title}`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Task Name *</label>
+      <input class="form-input" id="f_name" placeholder="e.g. Analyze banking fee discrepancies" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="f_status">
+          <option value="planned">Planned</option>
+          <option value="progress">In Progress</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date / Period</label>
+        <input class="form-input" id="f_date" placeholder="e.g. June 2025" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tools / Technologies Used</label>
+      <input class="form-input" id="f_tools" placeholder="e.g. Excel, SQL, Python (comma separated)" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Task / Question</label>
+      <textarea class="form-textarea" id="f_question" placeholder="What were you asked to do or find out?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">How I Did It</label>
+      <textarea class="form-textarea" id="f_approach" placeholder="Describe your methodology and steps..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">What I Accomplished</label>
+      <textarea class="form-textarea" id="f_accomplished" placeholder="What did you produce or deliver?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Impact</label>
+      <textarea class="form-textarea" id="f_impact" placeholder="Business or team impact..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Problems Faced</label>
+      <textarea class="form-textarea" id="f_problems" placeholder="Blockers, challenges, how you resolved them..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Use Cases</label>
+      <textarea class="form-textarea" id="f_usecase" placeholder="Real-world applications, examples..."></textarea>
+    </div>
+  `;
+  document.getElementById('addModal').classList.add('open');
+}
+
+function openAddSlideModal() {
+  document.getElementById('modalTitle').textContent = 'Add Presentation Slide';
+  document.getElementById('modalBody').innerHTML = `
+    <div class="form-group">
+      <label class="form-label">Slide Title *</label>
+      <input class="form-input" id="f_name" placeholder="e.g. Introduction to LLMs" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Purpose / Goal</label>
+      <textarea class="form-textarea" id="f_purpose" placeholder="What is this slide trying to achieve?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Key Ideas</label>
+      <textarea class="form-textarea" id="f_ideas" placeholder="Main bullet points or talking points..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Subtitles / Sections</label>
+      <textarea class="form-textarea" id="f_subtitles" placeholder="Sub-headings or breakdown of content..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Deliverables</label>
+      <textarea class="form-textarea" id="f_deliverables" placeholder="What outputs will you show on this slide?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Audience & Context</label>
+      <textarea class="form-textarea" id="f_audience" placeholder="Who is your audience? What background do they have?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Speaker Notes</label>
+      <textarea class="form-textarea" id="f_notes" placeholder="Notes for when you present this slide..."></textarea>
+    </div>
+  `;
+  document.getElementById('addModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('addModal').classList.remove('open');
+}
+
+function saveTask() {
+  const name = document.getElementById('f_name')?.value.trim();
+  if (!name) { alert('Please enter a name.'); return; }
+
+  if (currentPage === 'llm') {
+    const slide = {
+      id: uid(),
+      slideTitle: name,
+      purpose:     document.getElementById('f_purpose')?.value.trim() || '',
+      ideas:       document.getElementById('f_ideas')?.value.trim() || '',
+      subtitles:   document.getElementById('f_subtitles')?.value.trim() || '',
+      deliverables:document.getElementById('f_deliverables')?.value.trim() || '',
+      audience:    document.getElementById('f_audience')?.value.trim() || '',
+      notes:       document.getElementById('f_notes')?.value.trim() || '',
+    };
+    slides.push(slide);
+    save('ipd_slides', slides);
+    closeModal();
+    renderLLM();
+    return;
+  }
+
+  const task = {
+    id:          uid(),
+    name,
+    status:      document.getElementById('f_status')?.value || 'planned',
+    date:        document.getElementById('f_date')?.value.trim() || '',
+    tools:       document.getElementById('f_tools')?.value.trim() || '',
+    question:    document.getElementById('f_question')?.value.trim() || '',
+    approach:    document.getElementById('f_approach')?.value.trim() || '',
+    accomplished:document.getElementById('f_accomplished')?.value.trim() || '',
+    impact:      document.getElementById('f_impact')?.value.trim() || '',
+    problems:    document.getElementById('f_problems')?.value.trim() || '',
+    usecase:     document.getElementById('f_usecase')?.value.trim() || '',
+  };
+  tasks[currentPage].push(task);
+  save('ipd_tasks', tasks);
+  closeModal();
+  renderTaskPage(currentPage);
+}
+
+// ══════════════════════════════════════════════════════════
+//  EDIT MODE
+// ══════════════════════════════════════════════════════════
+function toggleEditMode() {
+  editMode = !editMode;
+  const btn = document.getElementById('editModeBtn');
+  btn.textContent = editMode ? '👁 View Mode' : '✏️ Edit Mode';
+  btn.style.borderColor = editMode ? 'var(--yellow)' : '';
+  btn.style.color = editMode ? 'var(--yellow)' : '';
+  updateEditBanners();
+  if (currentPage === 'llm') renderLLM();
+  else renderTaskPage(currentPage);
+}
+
+function updateEditBanners() {
+  document.querySelectorAll('.edit-mode-banner').forEach(b => {
+    b.classList.toggle('visible', editMode && b.id === 'edit-banner-' + currentPage);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+//  AI ASSISTANT
+// ══════════════════════════════════════════════════════════
+function openAIPanel() {
+  document.getElementById('aiModal').classList.add('open');
+  document.getElementById('aiResult').style.display = 'none';
+}
+
+async function runAI() {
+  const apiKey = document.getElementById('aiApiKey').value.trim();
+  const prompt = document.getElementById('aiPrompt').value.trim();
+  const source = document.getElementById('aiSource').value;
+
+  if (!apiKey) { alert('Please enter your Anthropic API key.'); return; }
+  if (!prompt) { alert('Please enter a prompt.'); return; }
+
+  // Build context
+  let context = '';
+  if (source === 'all') {
+    PAGES.forEach(p => {
+      const t = tasks[p];
+      if (t.length) {
+        context += `\n\n=== ${PAGE_META[p].title} ===\n`;
+        t.forEach((task, i) => {
+          context += `\nTask ${i+1}: ${task.name} [${task.status}]\n`;
+          if (task.question)     context += `Question: ${task.question}\n`;
+          if (task.approach)     context += `Approach: ${task.approach}\n`;
+          if (task.accomplished) context += `Accomplished: ${task.accomplished}\n`;
+          if (task.impact)       context += `Impact: ${task.impact}\n`;
+          if (task.problems)     context += `Problems: ${task.problems}\n`;
+          if (task.usecase)      context += `Use Cases: ${task.usecase}\n`;
+        });
+      }
+    });
+    if (slides.length) {
+      context += `\n\n=== LLM Presentation ===\n`;
+      slides.forEach((s,i) => {
+        context += `\nSlide ${i+1}: ${s.slideTitle}\n`;
+        if (s.purpose)      context += `Purpose: ${s.purpose}\n`;
+        if (s.ideas)        context += `Ideas: ${s.ideas}\n`;
+        if (s.deliverables) context += `Deliverables: ${s.deliverables}\n`;
+      });
+    }
+  } else {
+    if (currentPage === 'llm') {
+      slides.forEach((s,i) => {
+        context += `\nSlide ${i+1}: ${s.slideTitle}\n`;
+        if (s.purpose)    context += `Purpose: ${s.purpose}\n`;
+        if (s.ideas)      context += `Ideas: ${s.ideas}\n`;
+        if (s.notes)      context += `Notes: ${s.notes}\n`;
+      });
+    } else {
+      tasks[currentPage].forEach((task,i) => {
+        context += `\nTask ${i+1}: ${task.name} [${task.status}]\n`;
+        if (task.question)     context += `Question: ${task.question}\n`;
+        if (task.approach)     context += `Approach: ${task.approach}\n`;
+        if (task.accomplished) context += `Accomplished: ${task.accomplished}\n`;
+        if (task.impact)       context += `Impact: ${task.impact}\n`;
+        if (task.problems)     context += `Problems: ${task.problems}\n`;
+        if (task.usecase)      context += `Use Cases: ${task.usecase}\n`;
+      });
+    }
+  }
+
+  const btn = document.getElementById('aiRunBtn');
+  btn.innerHTML = '<span class="spinning">⏳</span> Generating...';
+  btn.disabled = true;
+
+  document.getElementById('aiResult').style.display = 'block';
+  document.getElementById('aiOutputText').textContent = 'Thinking...';
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true',
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: 'You are a professional work summary assistant. Help the user clearly and concisely summarize their intern work tasks, contributions, and impacts for their supervisor. Be concrete, highlight accomplishments, and make it sound professional but genuine.',
+        messages: [{
+          role: 'user',
+          content: `Here is my work data:\n${context}\n\nMy request: ${prompt}`
+        }]
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    document.getElementById('aiOutputText').textContent = data.content?.[0]?.text || '(no response)';
+  } catch (e) {
+    document.getElementById('aiOutputText').textContent = `Error: ${e.message}`;
+  } finally {
+    btn.innerHTML = '✨ Generate';
+    btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════════════
+function uid() { return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Close modal on overlay click
+document.getElementById('addModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('addModal')) closeModal();
+});
+document.getElementById('aiModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('aiModal')) document.getElementById('aiModal').classList.remove('open');
+});
+
+// ══════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════
+updatePeriod();
+renderTaskPage('coa');
+</script>
+</body>
+</html>
