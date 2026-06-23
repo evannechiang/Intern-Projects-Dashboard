@@ -853,6 +853,8 @@
     </div>
     <div class="topbar-actions">
       <button class="btn btn-ghost" id="editModeBtn" onclick="toggleEditMode()">✏️ Edit Mode</button>
+      <button class="btn btn-ghost" onclick="exportData()" title="Download all tasks as a JSON file">⬇️ Export</button>
+      <label class="btn btn-ghost" title="Load tasks from a JSON file" style="cursor:pointer">⬆️ Import<input type="file" accept=".json" onchange="importData(event)" style="display:none"/></label>
       <button class="btn btn-ai" onclick="openAIPanel()">✨ AI Summarize</button>
       <button class="btn btn-primary" id="addTaskBtn" onclick="openAddModal()">+ Add Task</button>
     </div>
@@ -1539,6 +1541,40 @@ async function runAI() {
 // ══════════════════════════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════════════════════════
+function exportData() {
+  const data = { tasks, slides, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `intern-dashboard-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.tasks || !data.slides) throw new Error('Invalid file format');
+      if (!confirm('This will replace all current tasks and slides. Continue?')) return;
+      tasks = data.tasks;
+      slides = data.slides;
+      save('ipd_tasks', tasks);
+      save('ipd_slides', slides);
+      if (currentPage === 'llm') renderLLM();
+      else renderTaskPage(currentPage);
+      alert('✅ Data imported successfully!');
+    } catch(err) {
+      alert('❌ Could not read file. Make sure it\'s a valid dashboard export.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
 function uid() { return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
