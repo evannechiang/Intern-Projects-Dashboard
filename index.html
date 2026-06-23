@@ -1011,10 +1011,12 @@ function save(key, val) {
 function initFirebase() {
   if (!window._fbListen) { setTimeout(initFirebase, 200); return; }
   window._fbListen('ipd_tasks', val => {
-    if (val) { tasks = val; renderTaskPage(currentPage !== 'llm' ? currentPage : 'coa'); }
+    tasks = { coa: [], pricebook: [], scorecard: [], ...(val || {}) };
+    if (currentPage !== 'llm') renderTaskPage(currentPage);
   });
   window._fbListen('ipd_slides', val => {
-    if (val) { slides = Array.isArray(val) ? val : Object.values(val); if (currentPage === 'llm') renderLLM(); }
+    slides = val ? (Array.isArray(val) ? val : Object.values(val)) : [];
+    if (currentPage === 'llm') renderLLM();
   });
 }
 
