@@ -60,7 +60,7 @@
   /* ── Sidebar ── */
   #sidebar {
     width: 240px;
-    min-height: 100vh;
+    height: 100vh;
     background: var(--surface);
     border-right: 1px solid var(--border);
     display: flex;
@@ -69,6 +69,8 @@
     top: 0; left: 0; bottom: 0;
     z-index: 100;
     transition: width 0.3s;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .sidebar-header {
@@ -998,34 +1000,40 @@
 
   <!-- Goals -->
   <div class="sidebar-section">
-    <div class="sidebar-section-label" style="display:flex;align-items:center">
-      My Goals
-      <button class="sidebar-edit-btn" onclick="toggleSidebarEdit()">edit</button>
+    <div class="nav-item" onclick="toggleGoals()" style="padding:10px 8px;margin-bottom:0">
+      <div class="nav-icon">🎯</div>
+      <span>My Goals</span>
+      <div class="chevron" id="goals-chevron" style="margin-left:auto;font-size:11px">▼</div>
     </div>
-    <div class="goal-block">
-      <div class="goal-item">
-        <div class="goal-term">
-          <div class="goal-dot" style="background:#059669"></div>
-          <span class="goal-term-label" style="color:#059669">Short Term</span>
+    <div id="goals-panel" style="display:none;margin-top:6px">
+      <div class="goal-block">
+        <div class="goal-item">
+          <div class="goal-term">
+            <div class="goal-dot" style="background:#059669"></div>
+            <span class="goal-term-label" style="color:#059669">Short Term</span>
+            <span class="goal-dates" style="margin-left:6px;margin-bottom:0">Late May – Mid June</span>
+          </div>
+          <div class="goal-text" id="goal-short" data-placeholder="Write your short-term goals..." onblur="saveSidebarMeta()"></div>
         </div>
-        <div class="goal-dates">Late May – Mid June</div>
-        <div class="goal-text" id="goal-short" data-placeholder="Write your short-term goals..." onblur="saveSidebarMeta()"></div>
-      </div>
-      <div class="goal-item">
-        <div class="goal-term">
-          <div class="goal-dot" style="background:#d97706"></div>
-          <span class="goal-term-label" style="color:#d97706">Mid Term</span>
+        <div class="goal-item">
+          <div class="goal-term">
+            <div class="goal-dot" style="background:#d97706"></div>
+            <span class="goal-term-label" style="color:#d97706">Mid Term</span>
+            <span class="goal-dates" style="margin-left:6px;margin-bottom:0">Mid June – Mid July</span>
+          </div>
+          <div class="goal-text" id="goal-mid" data-placeholder="Write your mid-term goals..." onblur="saveSidebarMeta()"></div>
         </div>
-        <div class="goal-dates">Mid June – Mid July</div>
-        <div class="goal-text" id="goal-mid" data-placeholder="Write your mid-term goals..." onblur="saveSidebarMeta()"></div>
-      </div>
-      <div class="goal-item">
-        <div class="goal-term">
-          <div class="goal-dot" style="background:#7c3aed"></div>
-          <span class="goal-term-label" style="color:#7c3aed">Long Term</span>
+        <div class="goal-item">
+          <div class="goal-term">
+            <div class="goal-dot" style="background:#7c3aed"></div>
+            <span class="goal-term-label" style="color:#7c3aed">Long Term</span>
+            <span class="goal-dates" style="margin-left:6px;margin-bottom:0">Late July – Aug 7</span>
+          </div>
+          <div class="goal-text" id="goal-long" data-placeholder="Write your long-term goals..." onblur="saveSidebarMeta()"></div>
         </div>
-        <div class="goal-dates">Late July – Aug 7</div>
-        <div class="goal-text" id="goal-long" data-placeholder="Write your long-term goals..." onblur="saveSidebarMeta()"></div>
+        <div style="padding:8px 12px;border-top:1px solid var(--border)">
+          <button class="sidebar-edit-btn" onclick="toggleSidebarEdit()" style="font-size:11px">✏️ Edit Goals</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1244,6 +1252,13 @@ function switchPage(p) {
 //  SIDEBAR META (duration + goals)
 // ══════════════════════════════════════════════════════════
 let sidebarEditMode = false;
+let goalsOpen = false;
+
+function toggleGoals() {
+  goalsOpen = !goalsOpen;
+  document.getElementById('goals-panel').style.display = goalsOpen ? 'block' : 'none';
+  document.getElementById('goals-chevron').style.transform = goalsOpen ? 'rotate(180deg)' : '';
+}
 
 function toggleSidebarEdit() {
   sidebarEditMode = !sidebarEditMode;
