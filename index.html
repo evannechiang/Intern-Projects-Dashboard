@@ -815,6 +815,145 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinning { animation: spin 1s linear infinite; display: inline-block; }
 
+  /* ── Sidebar info blocks ── */
+  .sidebar-section {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+
+  .duration-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+
+  .duration-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+  .duration-field:last-child { margin-bottom: 0; }
+
+  .duration-label {
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 600;
+    width: 36px;
+    flex-shrink: 0;
+  }
+
+  .duration-value {
+    font-size: 12px;
+    color: var(--text2);
+    font-weight: 500;
+    flex: 1;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin: -2px -4px;
+  }
+
+  .duration-value[contenteditable="true"] {
+    outline: none;
+    background: rgba(108,99,255,0.06);
+    box-shadow: inset 0 0 0 1px rgba(108,99,255,0.3);
+  }
+
+  .duration-value:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    font-style: italic;
+  }
+
+  .goal-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .goal-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .goal-item:last-child { border-bottom: none; }
+
+  .goal-term {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .goal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .goal-term-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .goal-dates {
+    font-size: 9px;
+    color: var(--text3);
+    margin-left: 12px;
+    margin-bottom: 5px;
+  }
+
+  .goal-text {
+    font-size: 11.5px;
+    color: var(--text2);
+    line-height: 1.5;
+    margin-left: 12px;
+    min-height: 16px;
+  }
+
+  .goal-text[contenteditable="true"] {
+    outline: none;
+    border-radius: 4px;
+    padding: 3px 5px;
+    margin-left: 7px;
+    background: rgba(108,99,255,0.06);
+    box-shadow: inset 0 0 0 1px rgba(108,99,255,0.3);
+  }
+
+  .goal-text:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    font-style: italic;
+    font-size: 11px;
+  }
+
+  .sidebar-edit-btn {
+    font-size: 10px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto;
+    text-decoration: underline;
+  }
+  .sidebar-edit-btn:hover { color: var(--accent); }
+
   /* ── Responsive ── */
   @media (max-width: 900px) {
     #sidebar { width: 64px; }
@@ -833,6 +972,62 @@
     <div class="sidebar-logo">Internship</div>
     <div class="sidebar-title">Projects Dashboard</div>
     <div class="sidebar-subtitle">Work Log & Contributions</div>
+  </div>
+
+  <!-- Internship Duration -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" style="display:flex;align-items:center">
+      Internship Duration
+      <button class="sidebar-edit-btn" onclick="toggleSidebarEdit()">edit</button>
+    </div>
+    <div class="duration-block">
+      <div class="duration-field">
+        <span class="duration-label">Start</span>
+        <span class="duration-value" id="intern-start" data-placeholder="e.g. May 26, 2025" onblur="saveSidebarMeta()">May 26, 2025</span>
+      </div>
+      <div class="duration-field">
+        <span class="duration-label">End</span>
+        <span class="duration-value" id="intern-end" data-placeholder="e.g. Aug 7, 2025" onblur="saveSidebarMeta()">Aug 7, 2025</span>
+      </div>
+      <div class="duration-field">
+        <span class="duration-label">Total</span>
+        <span class="duration-value" id="intern-total" data-placeholder="e.g. 11 weeks" onblur="saveSidebarMeta()">11 Weeks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goals -->
+  <div class="sidebar-section">
+    <div class="sidebar-section-label" style="display:flex;align-items:center">
+      My Goals
+      <button class="sidebar-edit-btn" onclick="toggleSidebarEdit()">edit</button>
+    </div>
+    <div class="goal-block">
+      <div class="goal-item">
+        <div class="goal-term">
+          <div class="goal-dot" style="background:#059669"></div>
+          <span class="goal-term-label" style="color:#059669">Short Term</span>
+        </div>
+        <div class="goal-dates">Late May – Mid June</div>
+        <div class="goal-text" id="goal-short" data-placeholder="Write your short-term goals..." onblur="saveSidebarMeta()"></div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-term">
+          <div class="goal-dot" style="background:#d97706"></div>
+          <span class="goal-term-label" style="color:#d97706">Mid Term</span>
+        </div>
+        <div class="goal-dates">Mid June – Mid July</div>
+        <div class="goal-text" id="goal-mid" data-placeholder="Write your mid-term goals..." onblur="saveSidebarMeta()"></div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-term">
+          <div class="goal-dot" style="background:#7c3aed"></div>
+          <span class="goal-term-label" style="color:#7c3aed">Long Term</span>
+        </div>
+        <div class="goal-dates">Late July – Aug 7</div>
+        <div class="goal-text" id="goal-long" data-placeholder="Write your long-term goals..." onblur="saveSidebarMeta()"></div>
+      </div>
+    </div>
   </div>
 
   <div class="sidebar-nav">
@@ -1018,6 +1213,7 @@ function initFirebase() {
     slides = val ? (Array.isArray(val) ? val : Object.values(val)) : [];
     if (currentPage === 'llm') renderLLM();
   });
+  window._fbListen('ipd_meta', val => { loadSidebarMeta(val); });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -1044,6 +1240,46 @@ function switchPage(p) {
 // ══════════════════════════════════════════════════════════
 //  PERIOD
 // ══════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  SIDEBAR META (duration + goals)
+// ══════════════════════════════════════════════════════════
+let sidebarEditMode = false;
+
+function toggleSidebarEdit() {
+  sidebarEditMode = !sidebarEditMode;
+  const fields = ['intern-start','intern-end','intern-total','goal-short','goal-mid','goal-long'];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.contentEditable = sidebarEditMode ? 'true' : 'false';
+  });
+  document.querySelectorAll('.sidebar-edit-btn').forEach(btn => {
+    btn.textContent = sidebarEditMode ? 'done' : 'edit';
+    btn.style.color = sidebarEditMode ? 'var(--accent)' : '';
+  });
+}
+
+function saveSidebarMeta() {
+  const meta = {
+    start: document.getElementById('intern-start')?.innerText.trim(),
+    end:   document.getElementById('intern-end')?.innerText.trim(),
+    total: document.getElementById('intern-total')?.innerText.trim(),
+    short: document.getElementById('goal-short')?.innerText.trim(),
+    mid:   document.getElementById('goal-mid')?.innerText.trim(),
+    long:  document.getElementById('goal-long')?.innerText.trim(),
+  };
+  if (window._fbSet) window._fbSet('ipd_meta', meta);
+}
+
+function loadSidebarMeta(meta) {
+  if (!meta) return;
+  const map = { 'intern-start': meta.start, 'intern-end': meta.end, 'intern-total': meta.total,
+                'goal-short': meta.short, 'goal-mid': meta.mid, 'goal-long': meta.long };
+  Object.entries(map).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) el.innerText = val;
+  });
+}
+
 function updatePeriod() {
   const now = new Date();
   const opts = { month: 'long', year: 'numeric' };
