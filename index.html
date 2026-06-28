@@ -973,7 +973,7 @@
   <div class="sidebar-header">
     <div class="sidebar-logo">Internship</div>
     <div class="sidebar-title">Projects Dashboard</div>
-    <div class="sidebar-subtitle">Work Log & Contributions</div>
+    <div class="sidebar-subtitle">Progress Tracker & Work Log</div>
   </div>
 
   <!-- Internship Duration -->
@@ -1040,19 +1040,19 @@
 
   <div class="sidebar-nav">
     <div class="nav-label">Projects</div>
-    <div class="nav-item active" onclick="switchPage('coa')">
+    <div class="nav-item active" data-page="coa" onclick="switchPage('coa')">
       <div class="nav-icon">💳</div>
       <span>Cost of Acceptance</span>
     </div>
-    <div class="nav-item" onclick="switchPage('pricebook')">
+    <div class="nav-item" data-page="pricebook" onclick="switchPage('pricebook')">
       <div class="nav-icon">📗</div>
       <span>Pricebook</span>
     </div>
-    <div class="nav-item" onclick="switchPage('scorecard')">
+    <div class="nav-item" data-page="scorecard" onclick="switchPage('scorecard')">
       <div class="nav-icon">📊</div>
       <span>Scorecard</span>
     </div>
-    <div class="nav-item" onclick="switchPage('llm')">
+    <div class="nav-item" data-page="llm" onclick="switchPage('llm')">
       <div class="nav-icon">🤖</div>
       <span>LLM Presentation</span>
     </div>
@@ -1230,9 +1230,9 @@ function initFirebase() {
 function switchPage(p) {
   currentPage = p;
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item[data-page]').forEach(el => el.classList.remove('active'));
   document.getElementById('page-' + p).classList.add('active');
-  document.querySelectorAll('.nav-item')[['coa','pricebook','scorecard','llm'].indexOf(p)].classList.add('active');
+  document.querySelector(`.nav-item[data-page="${p}"]`)?.classList.add('active');
 
   const meta = PAGE_META[p];
   document.getElementById('topPageTag').textContent = meta.tag;
